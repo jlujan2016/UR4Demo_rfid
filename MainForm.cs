@@ -26,6 +26,11 @@ namespace UHFAPP
 {
     public partial class MainForm : BaseForm
     {
+        //se agrego el 23/04/2026
+        private Thread gpioThread;
+        private bool runGPIO = false;
+        //fin de agregar
+
         public static int MODE = 1;//0:串口   1:网口    2:usb
         public static string ip = "";
         public static uint portData = 0;
@@ -95,7 +100,58 @@ namespace UHFAPP
             }
             //step3：给变量赋值
             DisconnectCallback = OnDisconnectCallback;
+
+            // ✅ GPIO THREAD AQUÍ ESTÁ BIEN
+            gpioThread = new Thread(GPIOLoop);
+            gpioThread.IsBackground = true;
+            gpioThread.Start();
+            // fin 
         }
+
+        //se agrego 23/04/2026
+        private void GPIOLoop()
+        {
+            while (true)
+            {
+                try
+                {
+                    if (isOpen)
+                    {
+                        byte[] gpio = new byte[2];
+
+                        if (uhf.getIOControl(gpio))
+                        {
+                            Console.WriteLine($"GPIO1: {gpio[0]}");
+                            //Console.WriteLine($"GPIO1: {gpio[0]}  GPIO2: {gpio[1]}");
+
+                            if (gpio[0] == 1)
+                            //if (gpio[0] == 1)
+                            {
+                                Console.WriteLine("Sensor activado");
+
+                                // ejemplo: disparar lectura RFID
+                                //uhf.UHFInventory(0x01);
+                                this.Invoke(new Action(() =>
+                                {
+                                    if (!isOpen) return;
+
+                                    MenuItemScanEPC_Click(null, null);
+                                }));
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("GPIO error: " + ex.Message);
+                }
+
+                Thread.Sleep(200);
+            }
+        }
+
+        //fin de agregar
+        
         
         private void Form1_Load(object sender, EventArgs e)
         {
