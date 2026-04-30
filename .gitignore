@@ -4,7 +4,6 @@ obj/
 out/
 build/
 *.exe
-*.dll
 *.so
 *.dylib
 *.pdb
