@@ -1,76 +1,11 @@
-# Archivos de compilación y salida
-bin/
-obj/
-out/
-build/
-*.exe
-*.so
-*.dylib
-*.pdb
-*.mdb
-*.deps.json
-*.runtimeconfig.json
-
-# Archivos de usuario y configuración local
-*.user
-*.userosscache
-*.suo
-*.cache
-*.vs/
+# Carpetas de Visual Studio
 .vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
 
-# Carpetas de dependencias
-packages/
-*.nupkg
-
-# Logs
-*.log
-*.logs
-*.txt
-
-# Archivos de cobertura de pruebas
-TestResults/
-*.coverage
-*.coverage.xml
-*.trx
-
-# Archivos específicos de IDE
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-Thumbs.db
-
-# Certificados y secrets
-*.pfx
-*.p12
-*.snk
-*.key
-*.pem
-secrets.json
-appsettings.Development.json
-
-# Archivos generados por herramientas
-_ReSharper*/
-*.ReSharper
-*.DotSettings
-*.DotSettings.user
-*.cachefile
-*.CodeCoverage
-*.CoverageResult
-
-# Archivos de publicación
-*.pubxml.user
-*.pubxml
-PublishProfiles/
-
-# Entity Framework
-Migrations/*.Designer.cs
-*.db
-*.db-shm
-*.db-wal
-
-# Docker
-.dockerignore
-*.dockerignore
+# Archivos de compilación
+*.exe
+*.dll
+*.pdb
