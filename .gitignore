@@ -1,11 +1,2 @@
 # Carpetas de Visual Studio
 .vs/
-[Bb]in/
-[Oo]bj/
-*.user
-*.suo
-
-# Archivos de compilación
-*.exe
-*.dll
-*.pdb
