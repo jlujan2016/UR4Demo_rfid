@@ -29,6 +29,7 @@ namespace UHFAPP
         //se agrego el 23/04/2026
         private Thread gpioThread;
         private bool runGPIO = false;
+        private int lastGpio0 = 0; // Para detectar cambios de flanco (0->1 o 1->0)
         //fin de agregar
 
         public static int MODE = 1;//0:串口   1:网口    2:usb
@@ -121,21 +122,33 @@ namespace UHFAPP
 
                         if (uhf.getIOControl(gpio))
                         {
-                            Console.WriteLine($"GPIO1: {gpio[0]}");
-                            //Console.WriteLine($"GPIO1: {gpio[0]}  GPIO2: {gpio[1]}");
-
-                            if (gpio[0] == 1)
-                            //if (gpio[0] == 1)
+                            // Detectar cambio de flanco en GPIO1
+                            if (gpio[0] != lastGpio0)
                             {
-                                Console.WriteLine("Sensor activado");
-
-                                // ejemplo: disparar lectura RFID
-                                //uhf.UHFInventory(0x01);
+                                lastGpio0 = gpio[0];
                                 this.Invoke(new Action(() =>
                                 {
                                     if (!isOpen) return;
 
+                                    // Asegurar que el formulario de lectura esté abierto/visible
                                     MenuItemScanEPC_Click(null, null);
+
+                                    if (gpio[0] == 1)
+                                    {
+                                        Console.WriteLine("Sensor activado - Iniciando lectura");
+                                        if (readEPCForm != null)
+                                        {
+                                            readEPCForm.StartScan();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Sensor desactivado - Deteniendo lectura");
+                                        if (readEPCForm != null)
+                                        {
+                                            readEPCForm.StopScan();
+                                        }
+                                    }
                                 }));
                             }
                         }

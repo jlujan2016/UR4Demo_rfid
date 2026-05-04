@@ -363,42 +363,54 @@ namespace UHFAPP
         }
         #endregion
         //start
+        public void StartScan()
+        {
+            if (btnScanEPC.Text == strStop || btnScanEPC.Text == strStop2) return;
+
+            mainform.disableControls(true);
+            if (uhf.StartInventory())
+            {
+                cbUIFast.Enabled = false;
+                groupBox8.Enabled = false;
+                cmbFormat.Enabled = false;
+                btnScanEPC.Text = !IsChineseSimple() ? strStop : strStop2;
+                StartReceiveThread();
+
+                //+++++++++++++++++
+                beginTime = System.Environment.TickCount;
+                workTime = 0;
+                if (StringUtils.IsNumber(txtTime.Text))
+                {
+                    workTime = int.Parse(txtTime.Text) * 1000;
+                }
+                if (workTime == 0)
+                {
+                    workTime = int.MaxValue;
+                }
+                new Thread(new ThreadStart(delegate { Time(); })).Start();
+                //+++++++++++++++++
+            }
+            else
+            {
+                MessageBoxEx.Show(this, "Inventory failure!");
+                mainform.enableControls();
+            }
+        }
+
+        public void StopScan()
+        {
+            StopEPC(true);
+        }
+
         private void btnScanEPC_Click(object sender, EventArgs e)
         {
             if (btnScanEPC.Text == strStop || btnScanEPC.Text == strStop2)
             {
-                StopEPC(true);
+                StopScan();
             }
             else
             {
-                mainform.disableControls(true);
-                if (uhf.StartInventory())
-                {
-                    cbUIFast.Enabled = false;
-                    groupBox8.Enabled = false;
-                    cmbFormat.Enabled = false;
-                    btnScanEPC.Text = !IsChineseSimple() ? strStop : strStop2;
-                    StartReceiveThread();
-
-                    //+++++++++++++++++
-                    beginTime = System.Environment.TickCount;
-                    workTime = 0;
-                    if (StringUtils.IsNumber(txtTime.Text))
-                    {
-                        workTime = int.Parse(txtTime.Text) * 1000;
-                    }
-                    if (workTime == 0)
-                    {
-                        workTime = int.MaxValue;
-                    }
-                    new Thread(new ThreadStart(delegate { Time(); })).Start();
-                    //+++++++++++++++++
-                }
-                else
-                {
-                    MessageBoxEx.Show(this, "Inventory failure!");
-                    mainform.enableControls();
-                }
+                StartScan();
             }
         }
 
